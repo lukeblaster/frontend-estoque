@@ -1,16 +1,43 @@
 import { useForm, SubmitHandler } from "react-hook-form"
 import { Button } from "../ui/button"
 import { DialogFooter, DialogClose } from "../ui/dialog"
-
+import { gql, useMutation } from "@apollo/client"
+import { GET_MOVIMENTATIONS } from "@/routes/movimentations"
 interface IFormInput {
     amount: number
     movementType: "entrada" | "saída",
     product: string
 }
 
-export function AddMovementForm() {
+const CREATE_MOVIMENTATION = gql`
+    mutation CreateMovimentation($amount: Int!, $status: String!, $movementType: String!, $product: String!) {
+        createMovimentation(amount: $amount, status: $status, movementType: $movementType, product: $product) {
+            amount,
+            status,
+            movementType,
+            product
+        }
+    }
+`
+
+export function AddMovementModal() {
     const { register, formState: { errors }, handleSubmit } = useForm<IFormInput>();
-    const onSubmit: SubmitHandler<IFormInput> = data => console.log(data);
+    const [createMovimentation] = useMutation(CREATE_MOVIMENTATION, {
+        refetchQueries: [
+            GET_MOVIMENTATIONS,
+            'GetMovimentations'
+        ]
+    })
+    const onSubmit: SubmitHandler<IFormInput> = (data) => {
+        createMovimentation({
+            variables: {
+                amount: +data.amount,
+                status: "concluído",
+                movementType: data.movementType,
+                product: data.product
+            }
+        })
+    }
 
     return (
         <form
@@ -41,7 +68,9 @@ export function AddMovementForm() {
                 <DialogClose asChild>
                     <Button variant={"outline"}>Cancelar</Button>
                 </DialogClose>
-                <Button variant={"default"} type="submit">Salvar</Button>
+                <DialogClose asChild>
+                    <Button variant={"default"} type="submit">Salvar</Button>
+                </DialogClose>
             </DialogFooter>
 
         </form>

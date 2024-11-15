@@ -1,8 +1,10 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { Checkbox } from "../ui/checkbox"
 import { Button } from "../ui/button"
-import { ArrowUpDown, MoreHorizontal } from "lucide-react"
+import { ArrowUpDown, MoreHorizontal, Trash2 } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu"
+import { Dialog, DialogHeader, DialogTrigger, DialogTitle, DialogDescription, DialogClose, DialogContent, DialogFooter } from "../ui/dialog"
+import { DeleteEquipmentModal } from "../modal/delete-equipment-modal"
 
 export type Equipment = {
     id: string
@@ -67,7 +69,6 @@ export const equipmentColumns: ColumnDef<Equipment>[] = [
         id: "actions",
         enableHiding: false,
         cell: ({ row }) => {
-            const payment = row.original
 
             return (
                 <DropdownMenu>
@@ -79,15 +80,7 @@ export const equipmentColumns: ColumnDef<Equipment>[] = [
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="bg-neutral-50">
                         <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                        <DropdownMenuItem
-                            className="hover:bg-neutral-200 cursor-pointer"
-                            onClick={() => navigator.clipboard.writeText(payment.id)}
-                        >
-                            Copiar ID de pagamento
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className="hover:bg-neutral-200 cursor-pointer">Visualizar cliente</DropdownMenuItem>
-                        <DropdownMenuItem className="hover:bg-neutral-200 cursor-pointer">Visualizar detalhes do pagamento</DropdownMenuItem>
+                        <DeleteEquipmentModal id={row.getValue("id")}/>
                     </DropdownMenuContent>
                 </DropdownMenu>
             )

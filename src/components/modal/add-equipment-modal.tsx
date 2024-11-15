@@ -1,15 +1,42 @@
 import { useForm, SubmitHandler } from "react-hook-form"
 import { Button } from "../ui/button"
 import { DialogFooter, DialogClose } from "../ui/dialog"
-
+import { useMutation, gql } from "@apollo/client"
+import { GET_EQUIPMENTS } from "@/routes/equipments"
 interface IFormInput {
     product: string,
     initialAmount: number
 }
 
-export function AddEquipmentForm() {
+const CREATE_EQUIPMENT = gql`
+    mutation CreateEquipment($name: String!, $quantityInStock: Int!) {
+        createEquipment(name: $name, quantityInStock: $quantityInStock) {
+            name,
+            quantityInStock
+        }
+    }
+`
+
+export function AddEquipmentModal() {
     const { register, formState: { errors }, handleSubmit } = useForm<IFormInput>();
-    const onSubmit: SubmitHandler<IFormInput> = data => console.log(data);
+    const [createEquipment] = useMutation(CREATE_EQUIPMENT,
+        {
+            refetchQueries: [
+                GET_EQUIPMENTS,
+                'GetEquipments'
+            ]
+        }
+    );
+
+    const onSubmit: SubmitHandler<IFormInput> = (data) => {
+        const quantityInStock = +data.initialAmount
+        createEquipment({
+            variables: {
+                name: data.product,
+                quantityInStock: quantityInStock
+            }
+        })
+    }
 
     return (
         <form
@@ -25,13 +52,15 @@ export function AddEquipmentForm() {
             )}
 
             <label htmlFor="amount">Quantidade</label>
-            <input type="text" {...register("initialAmount", { required: true, min: 1, max: 99 })} />
+            <input type="number" {...register("initialAmount", { required: true, min: 1, max: 999 })} />
 
             <DialogFooter className="mt-6">
                 <DialogClose asChild>
                     <Button variant={"outline"}>Cancelar</Button>
                 </DialogClose>
-                <Button variant={"default"} type="submit">Salvar</Button>
+                <DialogClose asChild>
+                    <Button variant={"default"} type="submit">Salvar</Button>
+                </DialogClose>
             </DialogFooter>
 
         </form>

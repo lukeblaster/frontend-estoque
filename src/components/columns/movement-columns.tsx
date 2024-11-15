@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { Checkbox } from "../ui/checkbox"
 import { Button } from "../ui/button"
-import { ArrowUpDown, MoreHorizontal } from "lucide-react"
+import { ArrowUpDown, MoreHorizontal, Trash, Trash2 } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu"
 
 export type Movimentation = {
@@ -97,15 +97,7 @@ export const movementColumns: ColumnDef<Movimentation>[] = [
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="bg-neutral-50">
                         <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                        <DropdownMenuItem
-                            className="hover:bg-neutral-200 cursor-pointer"
-                            onClick={() => navigator.clipboard.writeText(payment.id)}
-                        >
-                            Copiar ID de pagamento
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className="hover:bg-neutral-200 cursor-pointer">Visualizar cliente</DropdownMenuItem>
-                        <DropdownMenuItem className="hover:bg-neutral-200 cursor-pointer">Visualizar detalhes do pagamento</DropdownMenuItem>
+                        <DropdownMenuItem>Visualizar detalhes</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             )

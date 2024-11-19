@@ -1,9 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { Checkbox } from "../ui/checkbox"
 import { Button } from "../ui/button"
-import { ArrowUpDown, MoreHorizontal, Trash2 } from "lucide-react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu"
-import { Dialog, DialogHeader, DialogTrigger, DialogTitle, DialogDescription, DialogClose, DialogContent, DialogFooter } from "../ui/dialog"
+import { ArrowUpDown, MoreHorizontal } from "lucide-react"
+import { DropdownMenu, DropdownMenuContent,  DropdownMenuLabel,  DropdownMenuTrigger } from "../ui/dropdown-menu"
 import { DeleteEquipmentModal } from "../modal/delete-equipment-modal"
 
 export type Equipment = {

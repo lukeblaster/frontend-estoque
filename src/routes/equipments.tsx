@@ -1,42 +1,20 @@
 import { DataTable } from "@/components/tables/data-table"
-import { Equipment, equipmentColumns } from "@/components/columns/equipment-columns"
+import { equipmentColumns } from "@/components/columns/equipment-columns"
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button" 
-import { AddEquipmentForm } from "@/components/forms/add-equipment-form"
+import { AddEquipmentModal } from "@/components/modal/add-equipment-modal"
 import { Plus } from "lucide-react"
+import { gql, useQuery } from "@apollo/client"
 
-const data: Equipment[] = [
-    {
-        id: "ajjs761",
-        name: "Nível",
-        quantityInStock: 45
-    },
-    {
-        id: "ajjs761",
-        name: "Cabo de força",
-        quantityInStock: 78
-    },
-    {
-        id: "ajjs761",
-        name: "Furadeira",
-        quantityInStock: 10
-    },
-    {
-        id: "ajjs761",
-        name: "Chave Phillips",
-        quantityInStock: 13
-    },
-    {
-        id: "ajjs761",
-        name: "Chave Inglesa",
-        quantityInStock: 22
-    },
-    {
-        id: "ajjs761",
-        name: "Escada",
-        quantityInStock: 11
-    },
-]
+export const GET_EQUIPMENTS = gql`
+    query GetEquipments {
+        equipment {
+            id,
+            name,
+            quantityInStock
+        }
+    }
+`
 
 function DialogEquipment() {
     return (
@@ -55,7 +33,7 @@ function DialogEquipment() {
                 </DialogHeader>
 
                 {/* Componente de Dialog para adicionar novo equipamento */}
-                <AddEquipmentForm />
+                <AddEquipmentModal />
 
             </DialogContent>
         </Dialog>
@@ -63,10 +41,15 @@ function DialogEquipment() {
 }
 
 export function Equipments() {
+    const { loading, error, data } = useQuery(GET_EQUIPMENTS);
+
+    if(loading) return <p>Carregando... </p>;
+    if(error) return <p>Erro: {error.message}</p>;
+
     return (
         <div className="flex flex-col h-full">
             <h1 className="text-xl font-semibold">Equipamentos</h1>
-            <DataTable data={data} columns={equipmentColumns} filter="name" dialogTable={DialogEquipment()} />
+            <DataTable data={data.equipment} columns={equipmentColumns} filter="name" dialogTable={DialogEquipment()} />
         </div>
     )
 }

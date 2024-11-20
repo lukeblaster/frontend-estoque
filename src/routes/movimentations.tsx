@@ -1,97 +1,26 @@
 import { DataTable } from "@/components/tables/data-table";
 import { movementColumns } from "@/components/columns/movement-columns";
-import { Movimentation } from "@/components/columns/movement-columns";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { AddMovementForm } from "@/components/forms/add-movement-form";
+import { AddMovementModal } from "@/components/modal/add-movement-modal";
+import { gql, useQuery } from "@apollo/client";
 
-const data: Movimentation[] = [
-    {
-        id: "m5gr84i9",
-        amount: 20,
-        status: "sucesso",
-        movementType: "entrada",
-        product: "Alicate Universal",
-    },
-    {
-        id: "3u1reuv4",
-        amount: 7,
-        status: "sucesso",
-        movementType: "entrada",
-        product: "Chave Phillips",
-    },
-    {
-        id: "derv1ws0",
-        amount: 17,
-        status: "processando",
-        movementType: "entrada",
-        product: "Nível",
-    },
-    {
-        id: "5kma53ae",
-        amount: 35,
-        status: "sucesso",
-        movementType: "saida",
-        product: "Furadeira",
-    },
-    {
-        id: "bhqecj4p",
-        amount: 47,
-        status: "falha",
-        movementType: "saida",
-        product: "Chave Estrela",
-    },
-    {
-        id: "bhqecj4p",
-        amount: 47,
-        status: "falha",
-        movementType: "entrada",
-        product: "Chave Estrela",
-    },
-    {
-        id: "bhqecj4p",
-        amount: 47,
-        status: "falha",
-        movementType: "entrada",
-        product: "Chave Estrela",
-    },
-    {
-        id: "bhqecj4p",
-        amount: 47,
-        status: "falha",
-        movementType: "saida",
-        product: "Chave Estrela",
-    },
-    {
-        id: "bhqecj4p",
-        amount: 47,
-        status: "falha",
-        movementType: "saida",
-        product: "Chave Estrela",
-    },
-    {
-        id: "bhqecj4p",
-        amount: 47,
-        status: "falha",
-        movementType: "saida",
-        product: "Chave Estrela",
-    },
-    {
-        id: "bhqecj4p",
-        amount: 47,
-        status: "falha",
-        movementType: "saida",
-        product: "Chave Estrela",
-    },
-    {
-        id: "bhqecj4p",
-        amount: 47,
-        status: "falha",
-        movementType: "entrada",
-        product: "Chave Estrela",
-    },
-]
+export const GET_MOVIMENTATIONS = gql`
+    query GetMovimentations {
+        movimentation {
+            id
+            amount
+            status
+            movementType
+            equipment {
+                id,
+                name,
+                quantityInStock
+            }
+        }
+    }
+`
 
 function DialogMovement() {
     return (
@@ -110,7 +39,7 @@ function DialogMovement() {
                 </DialogHeader>
 
                 {/* Componente de Dialog para adicionar novo equipamento */}
-                <AddMovementForm />
+                <AddMovementModal />
 
             </DialogContent>
         </Dialog>
@@ -118,11 +47,17 @@ function DialogMovement() {
 }
 
 export function Movimentations() {
+    const { loading, error, data } = useQuery(GET_MOVIMENTATIONS);
+
+    if(loading) return <p>Carregando... </p>;
+    if(error) return <p>Erro: {error.message}</p>;
+
+    console.log(data)
 
     return (
         <div className="flex flex-col h-full">
             <h1 className="text-xl font-semibold">Movimentações</h1>
-            <DataTable data={data} columns={movementColumns} filter="product" dialogTable={DialogMovement()} />
+            <DataTable data={data.movimentation} columns={movementColumns} filter="equipment" dialogTable={DialogMovement()} />
         </div>
     )
 }

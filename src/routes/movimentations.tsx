@@ -13,7 +13,11 @@ export const GET_MOVIMENTATIONS = gql`
             amount
             status
             movementType
-            product
+            equipment {
+                id,
+                name,
+                quantityInStock
+            }
         }
     }
 `
@@ -48,10 +52,12 @@ export function Movimentations() {
     if(loading) return <p>Carregando... </p>;
     if(error) return <p>Erro: {error.message}</p>;
 
+    console.log(data)
+
     return (
         <div className="flex flex-col h-full">
             <h1 className="text-xl font-semibold">Movimentações</h1>
-            <DataTable data={data.movimentation} columns={movementColumns} filter="product" dialogTable={DialogMovement()} />
+            <DataTable data={data.movimentation} columns={movementColumns} filter="equipment" dialogTable={DialogMovement()} />
         </div>
     )
 }

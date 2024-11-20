@@ -6,7 +6,7 @@ import { DropdownMenu, DropdownMenuContent,  DropdownMenuLabel,  DropdownMenuTri
 import { DeleteEquipmentModal } from "../modal/delete-equipment-modal"
 
 export type Equipment = {
-    id: string
+    id: number
     name: string
     quantityInStock: number
 }

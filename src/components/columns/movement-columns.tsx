@@ -1,15 +1,16 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { Checkbox } from "../ui/checkbox"
 import { Button } from "../ui/button"
-import { ArrowUpDown, MoreHorizontal, Trash, Trash2 } from "lucide-react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu"
+import { ArrowUpDown, MoreHorizontal,  } from "lucide-react"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../ui/dropdown-menu"
+import { Equipment } from "./equipment-columns"
 
 export type Movimentation = {
     id: string
     amount: number
     status: "pendente" | "processando" | "sucesso" | "falha",
     movementType: "entrada" | "saida",
-    product: string
+    equipment: Equipment
 }
 
 export const movementColumns: ColumnDef<Movimentation>[] = [
@@ -50,7 +51,7 @@ export const movementColumns: ColumnDef<Movimentation>[] = [
         ),
     },
     {
-        accessorKey: "product",
+        accessorKey: "equipment",
         header: ({ column }) => {
             return (
                 <Button
@@ -63,7 +64,9 @@ export const movementColumns: ColumnDef<Movimentation>[] = [
                 </Button>
             )
         },
-        cell: ({ row }) => <div className="capitalize">{row.getValue("product")}</div>,
+        cell: ({ row }: { row: any }) => <div className="capitalize">
+            { row.getValue("equipment")['name']}
+        </div>,
     },
     {
         accessorKey: "movementType",
@@ -84,8 +87,7 @@ export const movementColumns: ColumnDef<Movimentation>[] = [
     {
         id: "actions",
         enableHiding: false,
-        cell: ({ row }) => {
-            const payment = row.original
+        cell: () => {
 
             return (
                 <DropdownMenu>

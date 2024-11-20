@@ -11,23 +11,28 @@ import { useState } from "react"
 interface IFormInput {
     amount: number
     movementType: "entrada" | "saída",
-    product: Equipment
+    equipment: number
 }
 
 const CREATE_MOVIMENTATION = gql`
-    mutation CreateMovimentation($amount: Int!, $status: String!, $movementType: String!, $product: Equipment!) {
-        createMovimentation(amount: $amount, status: $status, movementType: $movementType, product: $product) {
+    mutation CreateMovimentation($amount: Int!, $status: String!, $movementType: String!, $equipmentId: Int!) {
+        createMovimentation(amount: $amount, status: $status, movementType: $movementType, equipmentId: $equipmentId) {
             amount,
             status,
             movementType,
-            product
+            equipment {
+                id
+                name
+                quantityInStock
+            }
         }
     }
 `
 
 export function AddMovementModal() {
     const { register, formState: { errors }, handleSubmit, setValue } = useForm<IFormInput>();
-    const [selectedEquipment, setSelectedEquipment] = useState<Equipment>()
+    const [open, setOpen] = useState(false);
+    const [selectedEquipmentId, setSelectedEquipmentId] = useState<number>()
     const { loading, data, error } = useQuery(GET_EQUIPMENTS)
     const [createMovimentation] = useMutation(CREATE_MOVIMENTATION, {
         refetchQueries: [
@@ -36,17 +41,17 @@ export function AddMovementModal() {
         ]
     })
     const onSubmit: SubmitHandler<IFormInput> = (data) => {
-        // createMovimentation({
-        //     variables: {
-        //         amount: +data.amount,
-        //         status: "concluído",
-        //         movementType: data.movementType,
-        //         product: data.product
-        //     }
-        // })
+        createMovimentation({
+            variables: {
+                amount: +data.amount,
+                status: "concluído",
+                movementType: data.movementType,
+                equipmentId: data.equipment
+            }
+        })
         console.log(data)
     }
-
+    
     if(loading) return "Carregando..."
     if(error) return `Error: ${error.message}`
     const equipments = data['equipment']
@@ -64,15 +69,15 @@ export function AddMovementModal() {
                 <span className="text-xs">Campo obrigatório</span>
             )} */}
 
-            <Popover>
+            <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <Button
                         variant={"outline"}
                         role="combobox"
                     >
                         {
-                            selectedEquipment ? equipments.find(
-                                (equipment: Equipment) => equipment.id === selectedEquipment.id
+                            selectedEquipmentId ? equipments.find(
+                                (equipment: Equipment) => equipment.id === selectedEquipmentId
                             ).name : "Selecione um equipamento"
                         }
                     </Button>
@@ -86,10 +91,11 @@ export function AddMovementModal() {
                                 {equipments.map((equip: Equipment) => (
                                     <CommandItem
                                         key={equip.id}
-                                        value={equip.name}
+                                        // value={equip.equipmentId}
                                         onSelect={() => {
-                                            setValue("product", equip)
-                                            setSelectedEquipment(equip)
+                                            setValue("equipment", equip.id)
+                                            setSelectedEquipmentId(equip.id)
+                                            setOpen(false)
                                         }}
                                     >
                                         {equip.name}

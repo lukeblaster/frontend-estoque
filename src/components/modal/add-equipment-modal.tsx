@@ -52,7 +52,10 @@ export function AddEquipmentModal() {
             )}
 
             <label htmlFor="amount">Quantidade</label>
-            <input type="number" {...register("initialAmount", { required: true, min: 1, max: 999 })} />
+            <input type="number" {...register("initialAmount", { required: true, min: 0, max: 9999 })} />
+            {errors.initialAmount?.type === "required" && (
+                <span className="text-xs">Campo obrigatório</span>
+            )}
 
             <DialogFooter className="mt-6">
                 <DialogClose asChild>
